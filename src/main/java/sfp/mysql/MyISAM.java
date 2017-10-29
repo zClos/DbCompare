@@ -2,6 +2,7 @@ package sfp.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import sfp.MyBenchmark;
 @State(Scope.Thread)
 public class MyISAM {
 	static private String driverName = "com.mysql.jdbc.Driver";
+	/* Check port-number */
 	static private String connectionName = "jdbc:mysql://localhost:3306/test";
 	Connection connection;
 	Statement statement;
@@ -30,6 +32,7 @@ public class MyISAM {
 		connection = DriverManager.getConnection(connectionName, MyBenchmark.ROOT, MyBenchmark.PASSWORD);
 		statement = connection.createStatement();
 		statement.execute(MyBenchmark.DROP_QUERY);
+		/* Notice to use MYISAM engine */
 		statement.execute(MyBenchmark.CREATE_QUERY + " ENGINE = MYISAM");
 		for (int i = 0; i < MyBenchmark.ROW_COUNT; i++) {
 			statement.execute(MyBenchmark.insertQuery(i));
@@ -45,7 +48,8 @@ public class MyISAM {
 	@Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public void testMethod() throws SQLException, ClassNotFoundException {
-		statement.executeQuery("SELECT * FROM SERVICE_PROVIDER WHERE NAME = 'NAME" + Math.round(Math.random() * MyBenchmark.ROW_COUNT) + "'");
-    }
+    public ResultSet testMethod() throws SQLException, ClassNotFoundException {
+		ResultSet resultSet = statement.executeQuery("SELECT * FROM SERVICE_PROVIDER WHERE NAME = 'NAME" + Math.round(Math.random() * MyBenchmark.ROW_COUNT) + "'");
+		return resultSet;
+	}
 }

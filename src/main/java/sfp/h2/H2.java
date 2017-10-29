@@ -2,6 +2,7 @@ package sfp.h2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,6 @@ import sfp.MyBenchmark;
 
 @State(Scope.Thread)
 public class H2 {
-
 	static private String driverName = "org.h2.Driver";
 	static private String connectionName = "jdbc:h2:~/test";
 	Connection connection;
@@ -46,7 +46,8 @@ public class H2 {
 	@Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public void testMethod() throws SQLException, ClassNotFoundException {
-		statement.executeQuery("SELECT * FROM SERVICE_PROVIDER WHERE NAME = 'NAME" + Math.round(Math.random() * MyBenchmark.ROW_COUNT) + "'");
-    }
+    public ResultSet testMethod() throws SQLException, ClassNotFoundException {
+		ResultSet resultSet = statement.executeQuery("SELECT * FROM SERVICE_PROVIDER WHERE NAME = 'NAME" + Math.round(Math.random() * MyBenchmark.ROW_COUNT) + "'");
+		return resultSet;
+	}
 }

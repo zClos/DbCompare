@@ -2,6 +2,7 @@ package sfp.postgresql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import sfp.MyBenchmark;
 @State(Scope.Thread)
 public class PostgreSql {
 	static private String driverName = "org.postgresql.Driver";
+	/* Check port-number */
 	static private String connectionName = "jdbc:postgresql://localhost:5432/postgres";
 	Connection connection;
 	Statement statement;
@@ -27,6 +29,7 @@ public class PostgreSql {
 	@Setup
 	public void prepare() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		Class.forName(driverName).newInstance();
+		/* Check default root 'postgres' */
 		connection = DriverManager.getConnection(connectionName, "postgres", MyBenchmark.PASSWORD);
 		statement = connection.createStatement();
 		statement.execute(MyBenchmark.DROP_QUERY);
@@ -45,7 +48,8 @@ public class PostgreSql {
 	@Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public void testMethod() throws SQLException, ClassNotFoundException {
-		statement.executeQuery("SELECT * FROM SERVICE_PROVIDER WHERE NAME = 'NAME" + Math.round(Math.random() * MyBenchmark.ROW_COUNT) + "'");
-    }
+    public ResultSet testMethod() throws SQLException, ClassNotFoundException {
+		ResultSet resultSet = statement.executeQuery("SELECT * FROM SERVICE_PROVIDER WHERE NAME = 'NAME" + Math.round(Math.random() * MyBenchmark.ROW_COUNT) + "'");
+		return resultSet;
+	}
 }
